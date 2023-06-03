@@ -18,7 +18,7 @@
 class Board {
 private:
      std::vector<std::vector<int>> board; 
-     std::map<std::pair<int,int>, std::unique_ptr<Figure*>> positions_of_figures; 
+     std::map<std::pair<int,int>, std::unique_ptr<Figure>> positions_of_figures; 
 
 public: 
     Board();
@@ -35,11 +35,11 @@ public:
      *  1) есть ли вообще фигура на этой коорддинате
      *  2) может ли эта фигура пойти на новую координату 
     */
-    bool MoveFigure(Figure* figure, const FigureColor& color, const std::pair<int, int>& current_pos, const std::pair<int, int>& new_pos);
+    bool MoveFigure(std::unique_ptr<Figure> figure, const FigureColor& color, const std::pair<int, int>& current_pos, const std::pair<int, int>& new_pos);
 
 
     // отображает экран с фигурами;
-    std::map<std::pair<int, int>, Figure*> Copy_of_position();
+    std::map<std::pair<int, int>, std::unique_ptr<Figure>> Copy_of_position();
 
 private:
     /**
@@ -66,7 +66,7 @@ private:
       * Проверяет вообще нормальные ли были переданы координаты, правильная ли фигура была взята,
       * и исходя из положения доски определаят валидность хода
      */
-     inline bool Check(Figure* f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos);
+     inline bool Check(std::unique_ptr<Figure> f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos);
 
     /**
      * @brief Особые случаи 
@@ -74,11 +74,11 @@ private:
      * и реализуется эта функция
     */
 
-    bool SpecialCasesPawn(Figure* f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos);
+    bool SpecialCasesPawn(std::unique_ptr<Figure> f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos);
 
 
 
-    void SpecialCasesRookAndKing(Figure* f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos);
+    void SpecialCasesRookAndKing(std::unique_ptr<Figure> f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos);
 
 public:
     /**

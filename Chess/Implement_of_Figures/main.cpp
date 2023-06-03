@@ -244,7 +244,7 @@ int main()
 
         if(board.isKingAreMated(FigureColor::White))
         {
-            DrawText("Check Mate !", 190, 400, 60, BLACK);
+            DrawText("Check Mate !", 190, 360, 60, BLACK);
             DrawText("Black Wins !", 190, 420, 60, BLACK);
             EndDrawing();
         }

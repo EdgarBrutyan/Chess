@@ -24,30 +24,30 @@ void Board::SetInitialPositions()
      }
 
      // Rook
-     positions_of_figures.insert({{0,0}, new Rook(FigureColor::White)});
-     positions_of_figures.insert({{0,7}, new Rook(FigureColor::White)});
-     positions_of_figures.insert({{7,0}, new Rook(FigureColor::Black)});
-     positions_of_figures.insert({{7,7}, new Rook(FigureColor::Black)});
+     positions_of_figures.insert({{0,0}, std::make_unique(new Rook(FigureColor::White))});
+     positions_of_figures.insert({{0,7}, std::make_unique(new Rook(FigureColor::White))});
+     positions_of_figures.insert({{7,0}, std::make_unique(new Rook(FigureColor::Black))});
+     positions_of_figures.insert({{7,7}, std::make_unique(new Rook(FigureColor::Black))});
 
      // Knight
-     positions_of_figures.insert({{0,1}, new Knight(FigureColor::White)});
-     positions_of_figures.insert({{7,1}, new Knight(FigureColor::Black)});
-     positions_of_figures.insert({{0,6}, new Knight(FigureColor::White)});
-     positions_of_figures.insert({{7,6}, new Knight(FigureColor::Black)});
+     positions_of_figures.insert({{0,1}, std::make_unique(new Knight(FigureColor::White))});
+     positions_of_figures.insert({{7,1}, std::make_unique(new Knight(FigureColor::Black))});
+     positions_of_figures.insert({{0,6}, std::make_unique(new Knight(FigureColor::White))});
+     positions_of_figures.insert({{7,6}, std::make_unique(new Knight(FigureColor::Black))});
 
      // Bishop
-     positions_of_figures.insert({{0,2}, new Bishop(FigureColor::White)});
-     positions_of_figures.insert({{7,2}, new Bishop(FigureColor::Black)});
-     positions_of_figures.insert({{0,5}, new Bishop(FigureColor::White)});
-     positions_of_figures.insert({{7,5}, new Bishop(FigureColor::Black)});
+     positions_of_figures.insert({{0,2}, std::make_unique(new Bishop(FigureColor::White))});
+     positions_of_figures.insert({{7,2}, std::make_unique(new Bishop(FigureColor::Black))});
+     positions_of_figures.insert({{0,5}, std::make_unique(new Bishop(FigureColor::White))});
+     positions_of_figures.insert({{7,5}, std::make_unique(new Bishop(FigureColor::Black))});
 
      // Queen 
-     positions_of_figures.insert({{0,3}, new Queen(FigureColor::White)});
-     positions_of_figures.insert({{7,3}, new Queen(FigureColor::Black)});
+     positions_of_figures.insert({{0,3}, std::make_unique(new Queen(FigureColor::White))});
+     positions_of_figures.insert({{7,3}, std::make_unique(new Queen(FigureColor::Black))});
 
     // King 
-     positions_of_figures.insert({{0,4}, new King(FigureColor::White)});
-     positions_of_figures.insert({{7,4}, new King(FigureColor::Black)});  
+     positions_of_figures.insert({{0,4}, std::make_unique(new King(FigureColor::White))});
+     positions_of_figures.insert({{7,4}, std::make_unique(new King(FigureColor::Black))});  
 }
 
 
@@ -87,7 +87,7 @@ Figure* Board::GetFigure(const std::pair<int, int>& coord)
 }
 
 
-bool Board::MoveFigure(Figure* f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos)
+bool Board::MoveFigure(std::unique_ptr<Figure> f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos)
 {
     if(typeid(*f) == typeid(King) && color == 1 && current == std::make_pair(0, 4) && new_pos == std::make_pair(0, 6)) 
     {
@@ -169,13 +169,13 @@ bool Board::MoveFigure(Figure* f, const FigureColor& color, const std::pair<int,
 }
 
 
-std::map<std::pair<int, int>, Figure*> Board::Copy_of_position()
+std::map<std::pair<int, int>, std::unique_ptr<Figure>> Board::Copy_of_position()
 {
     return positions_of_figures;
 }
 
 
-inline bool Board::Check(Figure* f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos)
+inline bool Board::Check(std::unique_ptr<Figure> f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos)
 {
     auto it = positions_of_figures.find(current);
 
@@ -187,7 +187,7 @@ inline bool Board::Check(Figure* f, const FigureColor& color, const std::pair<in
 }
 
 
-bool Board::SpecialCasesPawn(Figure* f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos)
+bool Board::SpecialCasesPawn(std::unique_ptr<Figure> f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos)
 {
     bool IsSpecialCase = false;
     bool Is_Figure_In_New_Pos = false;    
@@ -278,7 +278,7 @@ bool Board::SpecialCasesPawn(Figure* f, const FigureColor& color, const std::pai
 
                 if(f->GetColor() == -1)
                 {
-                    positions_of_figures.insert({{new_pos.first + 1, new_pos.second}, new Pawn(FigureColor::White)});
+                    positions_of_figures.insert({{new_pos.first + 1, new_pos.second}, std::make_unique(new Pawn(FigureColor::White))});
                     board[new_pos.first + 1][new_pos.second] = 1;
                 }
             } 
@@ -336,7 +336,7 @@ bool Board::isKingUnderCheck(const FigureColor& color, const std::pair<int, int>
 }
 
 
-void Board::SpecialCasesRookAndKing(Figure* f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos)
+void Board::SpecialCasesRookAndKing(std::unique<Figure> f, const FigureColor& color, const std::pair<int, int>& current, const std::pair<int, int>& new_pos)
 {
     if(typeid(*f) == typeid(Rook))
     {
@@ -544,47 +544,44 @@ bool Board::isKingAreMated(const FigureColor& color)
         {
             for(int i1 = 0; i1 < 8; i1++)
             {
-                for(int j1 = 0; j1 < 8; j1++)
+                 if(positions_of_figures.find({i1,j1})->second->GetColor() != color)
                 {
-                    if(figures.second->ValidOrNot(figures.first, {i1,j1}, *this))
-                    {
-                        Figure* figure_from_other_team = nullptr;
-                        int temp = board[i1][j1];
-
-                        if(positions_of_figures.find({i1,j1}) != positions_of_figures.end())
-                        {   
-                           if(positions_of_figures.find({i1,j1})->second->GetColor() != color)
-                           {
-                                figure_from_other_team = GetFigure({i1,j1});
-                                positions_of_figures.erase({i1,j1});
-                           }
-                        }
-                            
-                        positions_of_figures.insert({{i1,j1}, figures.second});
-                        board[i1][j1] = color;
-
-                        if(!isKingUnderCheck(color, {i,j}))
-                        {
-                            board[i1][j1] = temp;
-                            positions_of_figures.erase({i1,j1});
-
-                            if(figure_from_other_team != nullptr)
-                            {
-                                positions_of_figures.insert({{i1,j1}, figure_from_other_team});      
-                            }
-
-                            return false;
-                        }
-
-                        board[i1][j1] = temp;         
-                        positions_of_figures.erase({i1,j1});
-
-                        if(figure_from_other_team != nullptr)
-                        {
-                            positions_of_figures.insert({{i1,j1}, figure_from_other_team});
-                        }
-                    }
+                    figure_from_other_team = GetFigure({i1,j1});
+                    positions_of_figures.erase({i1,j1});
                 }
+            }
+        }
+    }
+
+
+    for(int j1 = 0; j1 < 8; j1++)
+    {
+        if(figures.second->ValidOrNot(figures.first, {i1,j1}, *this))
+        {
+            Figure* figure_from_other_team = nullptr;
+            int temp = board[i1][j1];
+            positions_of_figures.insert({{i1,j1}, figures.second});
+            board[i1][j1] = color;
+
+            if(!isKingUnderCheck(color, {i,j}))
+            {
+                board[i1][j1] = temp;
+                positions_of_figures.erase({i1,j1});
+
+                if(figure_from_other_team != nullptr)
+                {
+                    positions_of_figures.insert({{i1,j1}, figure_from_other_team});      
+                }
+
+                return false;
+            }
+
+            board[i1][j1] = temp;         
+            positions_of_figures.erase({i1,j1});
+
+            if(figure_from_other_team != nullptr)
+            {
+                positions_of_figures.insert({{i1,j1}, figure_from_other_team});
             }
         }
     }
@@ -607,6 +604,9 @@ bool Board::Castling(const FigureColor& color, int long_or_short_castling)
         {
             return false;
         }
+
+
+
 
         if(long_or_short_castling == 2)
         {   
@@ -648,6 +648,8 @@ bool Board::Castling(const FigureColor& color, int long_or_short_castling)
 
             return true;
         }
+
+
 
         else if(long_or_short_castling == 3)
         {
@@ -719,7 +721,7 @@ bool Board::Castling(const FigureColor& color, int long_or_short_castling)
 
            Rook* ptr_rook = dynamic_cast<Rook*>(rook);
 
-           if(ptr_rook->GetCount() != 0 || ptr_rook->GetColor() != color)
+          if(ptr_rook->GetCount() != 0 || ptr_rook->GetColor() != color)
            {
                 return false; 
            }
